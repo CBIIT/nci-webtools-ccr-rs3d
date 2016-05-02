@@ -14,7 +14,7 @@ $(document).ready(function() {
             $(this).dialog("close");
          }
      }
-   }); 
+   });
 
    $('#file1').change(function(){
         if (window.FileReader) {
@@ -26,13 +26,13 @@ $(document).ready(function() {
                $('#file1Content').html('<pre>'+contents+'</pre>');
                $('#file1Content').scrollTop(0);
             }
-            
+
             if(file){
                reader.readAsText(file);
                file1 = file;
             }
         }
-        activeTab('tab-4458-1'); 
+        activeTab('tab-4458-1');
     });
 
   $('#file2').change(function(){
@@ -51,7 +51,7 @@ $(document).ready(function() {
                file2 = file;
             }
         }
-        activeTab('tab-4458-2'); 
+        activeTab('tab-4458-2');
     });
 
   $('#file3').change(function(){
@@ -70,7 +70,7 @@ $(document).ready(function() {
                file3 = file;
             }
         }
-        activeTab('tab-4458-3'); 
+        activeTab('tab-4458-3');
     });
 
 
@@ -87,8 +87,8 @@ $(document).ready(function() {
     });
 
    $('#upload').click(function(){
-     //  $('#message').html("<font color='red'><center><h1>Under Construction!</h1></center></font>");  
-     //  $('#messageBoard').dialog('open'); 
+     //  $('#message').html("<font color='red'><center><h1>Under Construction!</h1></center></font>");
+     //  $('#messageBoard').dialog('open');
      var formData = new FormData();
      formData.append('sat',$('#satField').val());
      formData.append('nrs',$('#nrsField').val());
@@ -96,7 +96,7 @@ $(document).ready(function() {
      formData.append('file1', file1);
      formData.append('file2', file2);
      formData.append('file3', file3);
-      $('.loading').css('display', 'block');  
+      $('.loading').css('display', 'block');
       $.ajax({
          type: "POST",
          url: "/Rs3dRest/processData",
@@ -105,7 +105,6 @@ $(document).ready(function() {
          processData:false,
          contentType: false,
          success: function(response){
-             alert("play");
              $('.loading').css('display', 'none');
          }
      });
@@ -117,7 +116,7 @@ $(document).ready(function() {
 
    document.getElementById('file2Content').addEventListener('dragover', handleDragOver, false);
    document.getElementById('file2Content').addEventListener('drop', handleFileSelect2, false);
-   
+
    document.getElementById('file3Content').addEventListener('dragover', handleDragOver, false);
    document.getElementById('file3Content').addEventListener('drop', handleFileSelect3, false);
 });
@@ -136,7 +135,7 @@ function handleFileSelect1(evt){
      $('#file1Content').html('<pre>'+contents+'</pre>');
      $('#file1Content').scrollTop(0);
   }
-  reader.readAsText(files[0], "UTF-8"); 
+  reader.readAsText(files[0], "UTF-8");
 }
 
 function handleDragOver(evt){
