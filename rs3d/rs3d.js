@@ -1,3 +1,5 @@
+var file1, file2, file3;
+
 $(document).ready(function() {
   $("#messageBoard").dialog({
      modal: true,
@@ -27,22 +29,7 @@ $(document).ready(function() {
             
             if(file){
                reader.readAsText(file);
-            }
-        }else {
-            try {
-                var filePath = $("#file1").val();
-                var fso = new ActiveXObject("Scripting.FileSystemObject");
-                var textStream = fso.OpenTextFile(filePath);
-                var fileData = textStream.ReadAll();
-                $('#file1Content').html('<pre>'+fileData+'</pre>');
-                $('#file1Content').scrollTop(0);
-                console.log(fileData);
-            } catch (e) {
-                if (e.number == -2146827859) {
-                alert('Unable to access local files due to browser security settings. ' +
-                'To overcome this, go to Tools->Internet Options->Security->Custom Level. ' +
-                'Find the setting for "Initialize and script ActiveX controls not marked as safe" and change it to "Enable" or "Prompt"');
-                }
+               file1 = file;
             }
         }
         activeTab('tab-4458-1'); 
@@ -61,22 +48,7 @@ $(document).ready(function() {
 
             if(file){
                reader.readAsText(file);
-            }
-        }else {
-            try {
-                var filePath = $("#file2").val();
-                var fso = new ActiveXObject("Scripting.FileSystemObject");
-                var textStream = fso.OpenTextFile(filePath);
-                var fileData = textStream.ReadAll();
-                $('#file2Content').html('<pre>'+fileData+'</pre>');
-                $('#file2Content').scrollTop(0);
-                console.log(fileData);
-            } catch (e) {
-                if (e.number == -2146827859) {
-                alert('Unable to access local files due to browser security settings. ' +
-                'To overcome this, go to Tools->Internet Options->Security->Custom Level. ' +
-                'Find the setting for "Initialize and script ActiveX controls not marked as safe" and change it to "Enable" or "Prompt"');
-                }
+               file2 = file;
             }
         }
         activeTab('tab-4458-2'); 
@@ -95,22 +67,7 @@ $(document).ready(function() {
 
             if(file){
                reader.readAsText(file);
-            }
-        }else {
-            try {
-                var filePath = $("#file3").val();
-                var fso = new ActiveXObject("Scripting.FileSystemObject");
-                var textStream = fso.OpenTextFile(filePath);
-                var fileData = textStream.ReadAll();
-                $('#file3Content').html('<pre>'+fileData+'</pre>'); 
-                $('#file3Content').scrollTop(0);
-                console.log(fileData);
-            } catch (e) {
-                if (e.number == -2146827859) {
-                alert('Unable to access local files due to browser security settings. ' +
-                'To overcome this, go to Tools->Internet Options->Security->Custom Level. ' +
-                'Find the setting for "Initialize and script ActiveX controls not marked as safe" and change it to "Enable" or "Prompt"');
-                }
+               file3 = file;
             }
         }
         activeTab('tab-4458-3'); 
@@ -130,8 +87,29 @@ $(document).ready(function() {
     });
 
    $('#upload').click(function(){
-       $('#message').html("<font color='red'><center><h1>Under Construction!</h1></center></font>");  
-       $('#messageBoard').dialog('open'); 
+     //  $('#message').html("<font color='red'><center><h1>Under Construction!</h1></center></font>");  
+     //  $('#messageBoard').dialog('open'); 
+     var formData = new FormData();
+     formData.append('sat',$('#satField').val());
+     formData.append('nrs',$('#nrsField').val());
+     formData.append('noi',$('#noiField').val());
+     formData.append('file1', file1);
+     formData.append('file2', file2);
+     formData.append('file3', file3);
+      $('.loading').css('display', 'block');  
+      $.ajax({
+         type: "POST",
+         url: "/Rs3dRest/processData",
+         cache: false,
+         data: formData,
+         processData:false,
+         contentType: false,
+         success: function(response){
+             alert("play");
+             $('.loading').css('display', 'none');
+         }
+     });
+
     });
 
    document.getElementById('file1Content').addEventListener('dragover', handleDragOver, false);
