@@ -1,5 +1,6 @@
 from flask import Flask, request
 import json
+import argparse
 
 app = Flask(__name__)
 
@@ -31,4 +32,8 @@ def processData():
     return "Success"
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=9150, use_evalex = False) 
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-p", dest="port_number", default="9150", help="Sets the Port") 
+    args = parser.parse_args()
+    port_num = int(args.port_number)    
+    app.run(host='0.0.0.0', port=port_num, use_evalex = False) 
