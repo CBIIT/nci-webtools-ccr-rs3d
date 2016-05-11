@@ -1,37 +1,72 @@
 from flask import Flask, request
 import json
 import argparse
+from PropertyUtil import PropertyUtil
+from stompest.config import StompConfig
+from stompest.sync import Stomp
 
 app = Flask(__name__)
 
-@app.route('/Rs3dRest/root')
-def root():
-    return ""
+class rs3d:
+    UPLOAD_FOLDER = 'rs3d.folder.upload'
+    QUEUE_NAME = 'queue.name'
+    QUEUE_URL = 'queue.url'
+    QUEUE_CONFIG = 'queue.config'
 
-@app.route('/Rs3dRest/processData', methods = ['POST'])
-def processData():
-    # Process Files
-    files = request.files
-    print len(files)
-    keys = []
-    for file in files:
-        files[file].save("/tmp/rs3d/"+files[file].filename)
 
-    parameters = request.form
-    satValue = parameters['sat']
-    nrsValue = parameters['nrs']
-    noiValue = parameters['noi']
+    @app.route('/Rs3dRest/root')
+    def root():
+        return ""
 
-    print parameters
+    @app.route('/Rs3dRest/processData', methods = ['POST'])
+    def processData():
+        # Process Files
+        files = request.files
+        print len(files)
+        keys = []
+        parameters = request.form
+        param = {}
+        for key in parameters: 
+            param[key] = parameters[key]
 
-    with open('/tmp/rs3d/result.txt', 'w') as f:
-        f.write(satValue + '\n')
-        f.write(nrsValue+ '\n')
-        f.write(noiValue)
-    
-    return "Success"
+        for file in files:
+            print file 
+            files[file].save("/tmp/rs3d/"+files[file].filename)
+            param[file] = files[file].filename
+ 
+        satValue = parameters['sat']
+        nrsValue = parameters['nrs']
+        noiValue = parameters['noi']
+
+        print parameters
+        print param
+        
+        with open('/tmp/rs3d/result.txt', 'w') as f:
+            f.write(satValue + '\n')
+            f.write(nrsValue+ '\n')
+            f.write(noiValue)
+
+        print app.config[rs3d.UPLOAD_FOLDER]
+        print app.config[rs3d.QUEUE_CONFIG]
+        print app.config[rs3d.QUEUE_NAME]
+
+        try:
+           client = Stomp(app.config[rs3d.QUEUE_CONFIG])
+           client.connect()
+           client.send(app.config[rs3d.QUEUE_NAME], json.dumps(param))
+           client.disconnect()
+           return "Success"
+        except Exception as e:
+           return "Failed"
+
+    def __init__(self):
+        rs3dConfig = PropertyUtil(r"config.ini")
+        app.config[rs3d.UPLOAD_FOLDER] = rs3dConfig.getAsString(rs3d.UPLOAD_FOLDER)
+        app.config[rs3d.QUEUE_CONFIG] = StompConfig(rs3dConfig.getAsString(rs3d.QUEUE_URL)) 
+        app.config[rs3d.QUEUE_NAME] = rs3dConfig.getAsString(rs3d.QUEUE_NAME)  
 
 if __name__ == '__main__':
+    rs3d()
     parser = argparse.ArgumentParser()
     parser.add_argument("-p", dest="port_number", default="9150", help="Sets the Port") 
     args = parser.parse_args()
