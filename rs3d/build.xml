@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="JPSURV" default="replace" basedir=".">
-      <target name="replace" depends="upload_exist,url_exist, name_exist">
+      <target name="replace" depends="upload_exist,url_exist, queueName_exist">
          <replace file="config.ini" token="@upload@" value="${upload}"/>
          <replace file="config.ini" token="@url@" value="${url}"/>
          <replace file="config.ini" token="@queueName@" value="${queueName}"/>
@@ -11,7 +11,7 @@
        <target name="url_exist" unless="url">
         <fail> Queue URL value is not set, stop</fail>
       </target>	     
-      <target name="name_exist" unless="name">
+      <target name="queueName_exist" unless="queueName">
               <fail> Queue Name value is not set, stop</fail>
       </target>	
 </project>
