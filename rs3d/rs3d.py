@@ -1,6 +1,7 @@
 from flask import Flask, request
 import json
 import argparse
+import os
 from PropertyUtil import PropertyUtil
 from stompest.config import StompConfig
 from stompest.sync import Stomp
@@ -30,26 +31,9 @@ class rs3d:
             param[key] = parameters[key]
 
         for file in files:
-            print file 
-            files[file].save("/tmp/rs3d/"+files[file].filename)
+            files[file].save(os.path.join(app.config[rs3d.UPLOAD_FOLDER], files[file].filename))
             param[file] = files[file].filename
  
-        satValue = parameters['sat']
-        nrsValue = parameters['nrs']
-        noiValue = parameters['noi']
-
-        print parameters
-        print param
-        
-        with open('/tmp/rs3d/result.txt', 'w') as f:
-            f.write(satValue + '\n')
-            f.write(nrsValue+ '\n')
-            f.write(noiValue)
-
-        print app.config[rs3d.UPLOAD_FOLDER]
-        print app.config[rs3d.QUEUE_CONFIG]
-        print app.config[rs3d.QUEUE_NAME]
-
         try:
            client = Stomp(app.config[rs3d.QUEUE_CONFIG])
            client.connect()

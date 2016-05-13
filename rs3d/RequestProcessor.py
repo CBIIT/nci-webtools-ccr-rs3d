@@ -25,13 +25,19 @@ class RequestProcessor(DisconnectListener):
   def consume(self, client, frame):
     parameters = json.loads(frame.body)
     print 'in queue call back function'
-    print parameters['sat']
-    print parameters['nrs']
-    print parameters['noi']
-    print parameters['file1']
-    print parameters['file2']
-    print parameters['file3']
+    satValue = parameters['sat']
+    nrsValue =  parameters['nrs']
+    noiValue =  parameters['noi']
+    file1Name =  parameters['file1']
+    file2Name =  parameters['file2']
+    file3Name =  parameters['file3']
+    
+    with open('/tmp/rs3d/result.txt', 'w') as f:
+        f.write(satValue + '\n')
+        f.write(nrsValue+ '\n')
+        f.write(noiValue)
 
+ 
   @defer.inlineCallbacks
   def run(self):
     client = yield Stomp(self.CONFIG[RequestProcessor.CONFIG]).connect()
